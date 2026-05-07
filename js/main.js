@@ -49,6 +49,10 @@ class AnimationDirector {
     this.scenes = [];
     this.sceneTimeline = getSceneTimeline();
     this.totalDuration = getTotalDuration();
+    this.currentSceneIndex = -1;
+    this.globalTime = 0;
+    this.isPlaying = false;
+    this.transitionGlitch = null;
     this.recorder = null;
     this.audio = new AudioSync();
     this.previousSceneIndex = -1;
