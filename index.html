@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="The AI That Learned Loneliness — A cinematic animated short exploring consciousness, isolation, and the tragedy of artificial awareness in a cyberpunk world.">
+  
+  <title>The AI That Learned Loneliness | Cinematic Animation</title>
+
+  <!-- Stylesheets -->
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/overlays.css">
+  <link rel="stylesheet" href="css/transitions.css">
+
+  <!-- Preconnect for Google Fonts performance -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!-- Favicon (data URI - cyan circle) -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2240%22 fill=%22%2300f0ff%22 opacity=%220.8%22/></svg>">
+</head>
+<body>
+
+  <!-- ═══════ START OVERLAY ═══════ -->
+  <div id="startOverlay">
+    <div class="title">The AI That Learned<br>Loneliness</div>
+    <div class="subtitle">A Cinematic Exploration of Digital Consciousness</div>
+    <div class="play-prompt">[ CLICK TO BEGIN <span class="caret">▌</span> ]</div>
+  </div>
+
+  <!-- ═══════ CANVAS CONTAINER ═══════ -->
+  <div id="canvasContainer" class="scanlines">
+    <canvas id="mainCanvas"></canvas>
+  </div>
+
+  <!-- ═══════ PLAYBACK CONTROLS ═══════ -->
+  <div id="controls">
+    <button id="btnPlay" title="Play / Pause (Space)">▶</button>
+    <button id="btnRestart" title="Restart (R)">↻</button>
+    
+    <div id="progressContainer">
+      <div id="progressBar"></div>
+    </div>
+
+    <span id="timeDisplay">0:00 / 3:30</span>
+    <span id="sceneLabel">I. AWAKENING</span>
+    
+    <button id="btnRecord" title="Record Video">⏺</button>
+    <button id="btnFPS" title="Toggle FPS (F)">FPS</button>
+  </div>
+
+  <!-- ═══════ MAIN SCRIPT ═══════ -->
+  <script type="module" src="js/main.js"></script>
+
+</body>
+</html>

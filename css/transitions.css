@@ -1,0 +1,72 @@
+/*
+ * TRANSITIONS.CSS — Glitch & Transition Effects (CSS-driven)
+ */
+
+/* Chromatic aberration filter */
+.chromatic-aberration {
+  animation: chromaticShift 0.15s ease-out;
+}
+
+@keyframes chromaticShift {
+  0% {
+    filter: none;
+  }
+  25% {
+    filter: drop-shadow(3px 0 0 rgba(255,0,0,0.3)) drop-shadow(-3px 0 0 rgba(0,255,255,0.3));
+  }
+  50% {
+    filter: drop-shadow(-2px 0 0 rgba(255,0,0,0.2)) drop-shadow(2px 0 0 rgba(0,255,255,0.2));
+  }
+  100% {
+    filter: none;
+  }
+}
+
+/* Scanline overlay (applied to canvas container) */
+.scanlines::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 0, 0, 0.03) 2px,
+    rgba(0, 0, 0, 0.03) 4px
+  );
+  pointer-events: none;
+  z-index: 5;
+}
+
+/* Scene crossfade */
+.scene-fade-enter {
+  animation: sceneFadeIn 1.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.scene-fade-exit {
+  animation: sceneFadeOut 1.5s cubic-bezier(0.7, 0, 0.84, 0) forwards;
+}
+
+@keyframes sceneFadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+@keyframes sceneFadeOut {
+  from { opacity: 1; }
+  to   { opacity: 0; }
+}
+
+/* Glitch flash */
+.glitch-flash {
+  animation: glitchFlash 0.3s ease-out;
+}
+
+@keyframes glitchFlash {
+  0%   { filter: brightness(1); }
+  10%  { filter: brightness(3); }
+  20%  { filter: brightness(0.5) hue-rotate(90deg); }
+  30%  { filter: brightness(2); }
+  50%  { filter: brightness(0.8) hue-rotate(-45deg); }
+  100% { filter: brightness(1); }
+}

@@ -1,0 +1,12 @@
+{
+  "name": "ai-loneliness-animation",
+  "version": "1.0.0",
+  "description": "The AI That Learned Loneliness — Cinematic web animation for YouTube",
+  "type": "module",
+  "scripts": {
+    "dev": "npx -y serve@latest . -l 3000 --cors",
+    "preview": "npx -y serve@latest . -l 8080 --cors"
+  },
+  "keywords": ["animation", "cinematic", "cyberpunk", "canvas", "youtube"],
+  "license": "MIT"
+}
