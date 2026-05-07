@@ -42,16 +42,18 @@ export class GlitchEffect {
     if (this.intensity < 0.01) return;
     ctx.save();
 
-    // Horizontal slice displacement
+    // Horizontal slice displacement (Refactored to avoid GPU stall)
     for (const slice of this.slices) {
-      try {
-        const sy = Math.max(0, Math.floor(slice.y));
-        const sh = Math.max(1, Math.min(Math.floor(slice.height), this.height - sy));
-        if (sh > 0 && sy + sh <= this.height) {
-          const imgData = ctx.getImageData(0, sy, this.width, sh);
-          ctx.putImageData(imgData, Math.floor(slice.offset), sy);
-        }
-      } catch (e) { /* tainted canvas */ }
+      const sy = Math.max(0, Math.floor(slice.y));
+      const sh = Math.max(1, Math.min(Math.floor(slice.height), this.height - sy));
+      if (sh > 0 && sy + sh <= this.height) {
+        // Draw the canvas onto itself with an offset
+        ctx.drawImage(
+          ctx.canvas,
+          0, sy * (ctx.canvas.height / this.height), ctx.canvas.width, sh * (ctx.canvas.height / this.height), // Source (scaled to internal res)
+          Math.floor(slice.offset), sy, this.width, sh // Destination (logical res)
+        );
+      }
     }
 
     // RGB split overlay

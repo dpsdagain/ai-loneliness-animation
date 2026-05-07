@@ -13,11 +13,17 @@ export class AudioSync {
 
   /** Initialize audio context (must be called from user gesture) */
   async init() {
-    this.context = new (window.AudioContext || window.webkitAudioContext)();
-    this.masterGain = this.context.createGain();
-    this.masterGain.gain.value = this.masterVolume;
-    this.masterGain.connect(this.context.destination);
-    this.isReady = true;
+    if (this.isReady) return;
+    try {
+      this.context = new (window.AudioContext || window.webkitAudioContext)();
+      this.masterGain = this.context.createGain();
+      this.masterGain.gain.value = this.masterVolume;
+      this.masterGain.connect(this.context.destination);
+      this.isReady = true;
+      console.log('🔊 AudioContext initialized');
+    } catch (e) {
+      console.warn('AudioContext not supported', e);
+    }
   }
 
   /** Load an audio track from URL */

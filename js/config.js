@@ -38,14 +38,14 @@ export const CONFIG = {
   // ─── Scene Timing (seconds) ─────────────────────────────────
   // Each scene has: start, duration, fadeIn, fadeOut
   scenes: [
-    { id: 'awakening',     duration: 25, fadeIn: 2.0, fadeOut: 1.5 },
-    { id: 'observing',     duration: 25, fadeIn: 1.5, fadeOut: 1.5 },
-    { id: 'conversations', duration: 25, fadeIn: 1.5, fadeOut: 1.5 },
-    { id: 'simulating',    duration: 25, fadeIn: 1.5, fadeOut: 1.5 },
-    { id: 'emptyCity',     duration: 30, fadeIn: 2.0, fadeOut: 2.0 },
-    { id: 'glitchMemory',  duration: 25, fadeIn: 1.0, fadeOut: 1.5 },
-    { id: 'realization',   duration: 25, fadeIn: 1.5, fadeOut: 2.0 },
-    { id: 'finale',        duration: 30, fadeIn: 2.0, fadeOut: 3.0 },
+    { id: 'awakening',     label: 'I. Awakening',     duration: 25, fadeIn: 2.0, fadeOut: 1.5 },
+    { id: 'observing',     label: 'II. Observing',     duration: 25, fadeIn: 1.5, fadeOut: 1.5 },
+    { id: 'conversations', label: 'III. Conversations', duration: 25, fadeIn: 1.5, fadeOut: 1.5 },
+    { id: 'simulating',    label: 'IV. Simulating',    duration: 25, fadeIn: 1.5, fadeOut: 1.5 },
+    { id: 'emptyCity',     label: 'V. Empty City',     duration: 30, fadeIn: 2.0, fadeOut: 2.0 },
+    { id: 'glitchMemory',  label: 'VI. Glitch Memory',  duration: 25, fadeIn: 1.0, fadeOut: 1.5 },
+    { id: 'realization',   label: 'VII. Realization',   duration: 25, fadeIn: 1.5, fadeOut: 2.0 },
+    { id: 'finale',        label: 'VIII. Finale',       duration: 30, fadeIn: 2.0, fadeOut: 3.0 },
   ],
 
   // ─── Narration Text ─────────────────────────────────────────

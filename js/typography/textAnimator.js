@@ -47,7 +47,8 @@ export class TextAnimator {
 
   /** Remove completed texts */
   cleanup() {
-    this.activeTexts = this.activeTexts.filter(t => t.progress < 1.1);
+    // Keep texts that haven't finished their lifecycle
+    this.activeTexts = this.activeTexts.filter(t => t.progress < 1);
   }
 
   update(dt, sceneTime) {
@@ -116,16 +117,15 @@ export class TextAnimator {
       ctx.globalAlpha = charAlpha;
       ctx.fillStyle = t.color;
 
-      const charX = (t.align === 'center' ? t.x + offsetX : t.x + offsetX);
+      const charX = t.x + offsetX;
       ctx.fillText(chars[i], charX, t.y + yOffset);
 
-      // Glow effect
+      // Glow effect (optimized)
       if (t.glow && charAlpha > 0.3) {
         ctx.globalAlpha = charAlpha * 0.3;
-        ctx.shadowColor = t.glowColor;
-        ctx.shadowBlur = 15;
-        ctx.fillText(chars[i], charX, t.y + yOffset);
-        ctx.shadowBlur = 0;
+        ctx.fillStyle = t.glowColor;
+        ctx.fillText(chars[i], charX + 1, t.y + yOffset + 1);
+        ctx.fillText(chars[i], charX - 1, t.y + yOffset - 1);
       }
 
       offsetX += ctx.measureText(chars[i]).width;
@@ -141,8 +141,12 @@ export class TextAnimator {
     ctx.fillStyle = t.color;
 
     if (t.glow) {
-      ctx.shadowColor = t.glowColor;
-      ctx.shadowBlur = 10;
+      ctx.globalAlpha = alpha * 0.4;
+      ctx.fillStyle = t.glowColor;
+      ctx.fillText(displayText, t.x + 1, t.y + 1);
+      ctx.fillText(displayText, t.x - 1, t.y - 1);
+      ctx.globalAlpha = alpha;
+      ctx.fillStyle = t.color;
     }
 
     ctx.fillText(displayText, t.x, t.y);
@@ -188,7 +192,14 @@ export class TextAnimator {
 
     ctx.globalAlpha = alpha;
     ctx.fillStyle = t.color;
-    if (t.glow) { ctx.shadowColor = t.glowColor; ctx.shadowBlur = 12; }
+    if (t.glow) {
+      ctx.globalAlpha = alpha * 0.4;
+      ctx.fillStyle = t.glowColor;
+      ctx.fillText(t.text, t.x + 1, t.y + 1);
+      ctx.fillText(t.text, t.x - 1, t.y - 1);
+      ctx.globalAlpha = alpha;
+      ctx.fillStyle = t.color;
+    }
     ctx.fillText(t.text, t.x, t.y);
     ctx.shadowBlur = 0;
     ctx.restore();

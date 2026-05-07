@@ -31,18 +31,29 @@ import { Scene06_GlitchMemory } from './scenes/Scene06_GlitchMemory.js';
 import { Scene07_Realization } from './scenes/Scene07_Realization.js';
 import { Scene08_Finale } from './scenes/Scene08_Finale.js';
 
+// Scene Registry
+const SCENE_REGISTRY = {
+  'awakening': Scene01_Awakening,
+  'observing': Scene02_Observing,
+  'conversations': Scene03_Conversations,
+  'simulating': Scene04_Simulating,
+  'emptyCity': Scene05_EmptyCity,
+  'glitchMemory': Scene06_GlitchMemory,
+  'realization': Scene07_Realization,
+  'finale': Scene08_Finale,
+};
+
 class AnimationDirector {
   constructor() {
     this.renderer = null;
     this.scenes = [];
     this.sceneTimeline = getSceneTimeline();
     this.totalDuration = getTotalDuration();
-    this.currentSceneIndex = -1;
-    this.globalTime = 0;
-    this.isPlaying = false;
-    this.transitionGlitch = null;
     this.recorder = null;
     this.audio = new AudioSync();
+    this.previousSceneIndex = -1;
+    this.transitionTime = 0;
+    this.isTransitioning = false;
 
     // UI elements
     this.progressBar = null;
@@ -58,17 +69,15 @@ class AnimationDirector {
     this.renderer = new Renderer(canvas);
     const { width, height } = this.renderer.getSize();
 
-    // Initialize all scenes
-    this.scenes = [
-      new Scene01_Awakening(width, height),
-      new Scene02_Observing(width, height),
-      new Scene03_Conversations(width, height),
-      new Scene04_Simulating(width, height),
-      new Scene05_EmptyCity(width, height),
-      new Scene06_GlitchMemory(width, height),
-      new Scene07_Realization(width, height),
-      new Scene08_Finale(width, height),
-    ];
+    // Initialize all scenes dynamically from registry
+    this.scenes = this.sceneTimeline.map(s => {
+      const SceneClass = SCENE_REGISTRY[s.id];
+      if (!SceneClass) {
+        console.warn(`Scene ID "${s.id}" not found in registry`);
+        return null;
+      }
+      return new SceneClass(width, height);
+    });
 
     // Transition glitch effect
     this.transitionGlitch = new GlitchEffect(width, height);
@@ -129,7 +138,14 @@ class AnimationDirector {
   _showStartScreen() {
     const overlay = document.getElementById('startOverlay');
     if (overlay) {
-      overlay.addEventListener('click', () => {
+      overlay.addEventListener('click', async () => {
+        // Resume AudioContext on user gesture
+        if (this.audio.context && this.audio.context.state === 'suspended') {
+          await this.audio.context.resume();
+        } else if (!this.audio.isReady) {
+          await this.audio.init();
+        }
+
         overlay.style.opacity = '0';
         setTimeout(() => {
           overlay.style.display = 'none';
@@ -211,11 +227,22 @@ class AnimationDirector {
 
     // Scene transition detected
     if (newSceneIndex !== this.currentSceneIndex) {
-      // Trigger transition glitch
       if (this.currentSceneIndex >= 0) {
+        this.previousSceneIndex = this.currentSceneIndex;
+        this.isTransitioning = true;
+        this.transitionTime = 0;
         this.transitionGlitch.setIntensity(0.7);
       }
       this.currentSceneIndex = newSceneIndex;
+    }
+
+    // Update transition state
+    if (this.isTransitioning) {
+      this.transitionTime += dt;
+      if (this.transitionTime >= CONFIG.transitions.crossfadeDuration) {
+        this.isTransitioning = false;
+        this.previousSceneIndex = -1;
+      }
     }
 
     // Calculate scene-local time
@@ -226,6 +253,11 @@ class AnimationDirector {
     // Update current scene
     if (this.scenes[this.currentSceneIndex]) {
       this.scenes[this.currentSceneIndex].update(dt, sceneTime, sceneProgress);
+      
+      // Cleanup Roughly once a second
+      if (Math.floor(this.globalTime) !== Math.floor(this.globalTime - dt)) {
+        this.scenes[this.currentSceneIndex].cleanup();
+      }
     }
 
     // Decay transition glitch
@@ -263,11 +295,31 @@ class AnimationDirector {
     }
     sceneAlpha = clamp(sceneAlpha, 0, 1);
 
-    // Render current scene
-    ctx.save();
-    ctx.globalAlpha = sceneAlpha;
-    this.scenes[this.currentSceneIndex].render(ctx, sceneProgress);
-    ctx.restore();
+    // Render Previous Scene if transitioning (Crossfade)
+    if (this.isTransitioning && this.previousSceneIndex >= 0) {
+      const prevScene = this.scenes[this.previousSceneIndex];
+      const prevConfig = this.sceneTimeline[this.previousSceneIndex];
+      const prevTime = this.globalTime - prevConfig.start;
+      const prevProgress = prevTime / prevConfig.duration;
+      const transitionProgress = this.transitionTime / CONFIG.transitions.crossfadeDuration;
+
+      ctx.save();
+      ctx.globalAlpha = 1 - transitionProgress;
+      prevScene.render(ctx, prevProgress);
+      ctx.restore();
+
+      // Current scene alpha is influenced by transition
+      ctx.save();
+      ctx.globalAlpha = transitionProgress * sceneAlpha;
+      this.scenes[this.currentSceneIndex].render(ctx, sceneProgress);
+      ctx.restore();
+    } else {
+      // Normal render
+      ctx.save();
+      ctx.globalAlpha = sceneAlpha;
+      this.scenes[this.currentSceneIndex].render(ctx, sceneProgress);
+      ctx.restore();
+    }
 
     // Transition glitch overlay
     if (this.transitionGlitch && this.transitionGlitch.intensity > 0.01) {
@@ -305,12 +357,8 @@ class AnimationDirector {
     }
 
     if (this.sceneLabel) {
-      const sceneNames = [
-        'I. Awakening', 'II. Observing', 'III. Conversations',
-        'IV. Simulating', 'V. Empty City', 'VI. Glitch Memory',
-        'VII. Realization', 'VIII. Finale'
-      ];
-      this.sceneLabel.textContent = sceneNames[this.currentSceneIndex] || '';
+      const sceneConfig = this.sceneTimeline[this.currentSceneIndex];
+      this.sceneLabel.textContent = sceneConfig ? sceneConfig.label : '';
     }
   }
 }

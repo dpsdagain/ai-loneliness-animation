@@ -35,18 +35,18 @@
 
   <!-- ═══════ PLAYBACK CONTROLS ═══════ -->
   <div id="controls">
-    <button id="btnPlay" title="Play / Pause (Space)">▶</button>
-    <button id="btnRestart" title="Restart (R)">↻</button>
+    <button id="btnPlay" title="Play / Pause (Space)" aria-label="Play or Pause">▶</button>
+    <button id="btnRestart" title="Restart (R)" aria-label="Restart Animation">↻</button>
     
-    <div id="progressContainer">
+    <div id="progressContainer" role="progressbar" aria-valuemin="0" aria-valuemax="100">
       <div id="progressBar"></div>
     </div>
 
-    <span id="timeDisplay">0:00 / 3:30</span>
-    <span id="sceneLabel">I. AWAKENING</span>
+    <span id="timeDisplay" aria-label="Elapsed time">0:00 / 3:30</span>
+    <span id="sceneLabel" aria-label="Current scene">I. AWAKENING</span>
     
-    <button id="btnRecord" title="Record Video">⏺</button>
-    <button id="btnFPS" title="Toggle FPS (F)">FPS</button>
+    <button id="btnRecord" title="Record Video" aria-label="Record to WebM">⏺</button>
+    <button id="btnFPS" title="Toggle FPS (F)" aria-label="Toggle FPS Counter">FPS</button>
   </div>
 
   <!-- ═══════ MAIN SCRIPT ═══════ -->

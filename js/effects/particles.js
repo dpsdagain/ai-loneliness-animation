@@ -38,18 +38,22 @@ export class ParticleSystem {
    * @param {boolean} randomY - If true, spawn at random Y; if false, spawn at top
    */
   _createParticle(profile, randomY = false) {
-    return {
-      x: randomRange(0, this.width),
-      y: randomY ? randomRange(0, this.height) : -10,
-      vx: randomRange(-0.5, 0.5) * profile.speed,
-      vy: randomRange(0.2, 1) * profile.speed,
-      size: randomRange(profile.size[0], profile.size[1]),
-      opacity: randomRange(profile.opacity[0], profile.opacity[1]),
-      life: randomRange(0, 1),          // Current life phase
-      maxLife: randomRange(3, 8),        // Total lifetime in seconds
-      phase: randomRange(0, Math.PI * 2), // For sine-wave drift
-      active: true,
-    };
+    const p = { active: true };
+    this._resetParticle(p, profile, randomY);
+    return p;
+  }
+
+  /** Reset a particle in-place (no new object allocation) */
+  _resetParticle(p, profile, randomY = false) {
+    p.x = randomRange(0, this.width);
+    p.y = randomY ? randomRange(0, this.height) : -10;
+    p.vx = randomRange(-0.5, 0.5) * profile.speed;
+    p.vy = randomRange(0.2, 1) * profile.speed;
+    p.size = randomRange(profile.size[0], profile.size[1]);
+    p.opacity = randomRange(profile.opacity[0], profile.opacity[1]);
+    p.life = randomY ? randomRange(0, 1) : 0;
+    p.maxLife = randomRange(3, 8);
+    p.phase = randomRange(0, Math.PI * 2);
   }
 
   /**
@@ -73,10 +77,8 @@ export class ParticleSystem {
 
       // Recycle particle when it exits or expires
       if (p.y > this.height + 10 || p.x < -10 || p.x > this.width + 10 || p.life >= 1) {
-        // Reset to top with new random properties
-        Object.assign(p, this._createParticle(profile, false));
-        p.y = -10;
-        p.life = 0;
+        // Reset in-place with new random properties
+        this._resetParticle(p, profile, false);
       }
     }
   }
