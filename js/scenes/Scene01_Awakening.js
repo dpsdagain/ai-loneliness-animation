@@ -154,8 +154,7 @@ export class Scene01_Awakening {
   }
 
   cleanup() {
-    this.textAnim.clear();
-    this.lighting.clearLights();
+    this.textAnim.cleanup();
   }
 
   resize(w, h) {

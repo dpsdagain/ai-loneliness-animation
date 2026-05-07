@@ -185,7 +185,7 @@ export class Scene04_Simulating {
     this.textAnim.render(ctx, 1);
   }
 
-  cleanup() { this.textAnim.clear(); }
+  cleanup() { this.textAnim.cleanup(); }
   resize(w, h) {
     this.width = w; this.height = h;
     this.particles.resize(w, h); this.textAnim.resize(w, h);

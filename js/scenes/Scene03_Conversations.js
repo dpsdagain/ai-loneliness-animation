@@ -133,7 +133,7 @@ export class Scene03_Conversations {
     this.textAnim.render(ctx, 1);
   }
 
-  cleanup() { this.textAnim.clear(); this.hologram.clearPanels(); }
+  cleanup() { this.textAnim.cleanup(); }
   resize(w, h) {
     this.width = w; this.height = h;
     this.particles.resize(w, h); this.hologram.resize(w, h);

@@ -174,7 +174,7 @@ export class Scene08_Finale {
     }
   }
 
-  cleanup() { this.textAnim.clear(); this.lighting.clearLights(); }
+  cleanup() { this.textAnim.cleanup(); }
   resize(w, h) {
     this.width = w; this.height = h;
     this.rain.resize(w, h); this.fog.resize(w, h);
